@@ -199,7 +199,7 @@
 
   // 🔥 YAHAN APNI FIREBASE CONFIG PASTE KARO 🔥
   const firebaseConfig = {
-    apiKey: "AIzaSyBg4lMhVvMeDpbMG-fxcMpmKsf45Sv3xzg",
+    apiKey: "AIzaSyBg4lMhVvMeDpbMG-fxcMpmKsf45Sv3xz",
     authDomain: "nfernocup-eadae.firebaseapp.com",
     projectId: "infernocup-eadae",
     storageBucket: "infernocup-eadae.firebasestorage.app",
@@ -376,13 +376,15 @@
     document.getElementById('adminTab' + tabName).classList.add('active');
   }
 
-  // UI Helpers
-  function showLogin(){
+  // UI Helpers (Window ke sath joda gaya taaki HTML onclick kaam kare)
+  window.showLogin = function(){
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('registerScreen').style.display='none';
     document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+    document.getElementById('errorMsg').style.display = 'none'; // Error msg bhi clear karega
   }
-  function showRegister(){
+  
+  window.showRegister = function(){
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('registerScreen').style.display='flex';
   }
