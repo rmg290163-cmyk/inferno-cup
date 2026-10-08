@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login — Inferno Cup</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg-0:#07080c;--fire-2:#ff9100;--premium:#a855f7;--text:#e9ecf1;--muted:#9aa3b2;--line:rgba(255,255,255,0.08);--glass:rgba(255,255,255,0.04);--grad:linear-gradient(135deg,#ff3d00 0%,#ff7a00 50%,#ffd000 100%);--grad-premium:linear-gradient(135deg,#a855f7 0%,#7c3aed 50%,#6d28d9 100%);--success:#66bb6a;--danger:#ef5350;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:var(--bg-0);color:var(--text);min-height:100vh}
+  .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .auth-box{background:linear-gradient(145deg,rgba(255,61,0,.06),rgba(255,208,0,.02));border:1px solid rgba(255,145,0,.2);border-radius:24px;padding:30px;max-width:450px;width:100%}
+  .auth-box h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8rem;text-align:center;margin-bottom:8px}
+  .auth-box h1 span{background:var(--grad);-webkit-background-clip:text;color:transparent}
+  .auth-box p{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+  .form-group{margin-bottom:15px}
+  .form-group label{display:block;font-family:'Rajdhani',sans-serif;font-weight:600;text-transform:uppercase;font-size:.85rem;color:var(--muted);margin-bottom:5px}
+  .form-group input{width:100%;padding:12px;border-radius:8px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--text);font-size:.95rem}
+  .btn{width:100%;padding:14px;border-radius:8px;background:var(--grad);color:#0a0a0a;font-weight:700;font-size:1rem;cursor:pointer;border:none}
+  .auth-switch{text-align:center;margin-top:15px;color:var(--muted);font-size:.9rem}
+  .auth-switch a{color:var(--fire-2);cursor:pointer}
+  .back-link{display:inline-block;margin-bottom:15px;color:var(--muted);text-decoration:none;font-size:.9rem}
+  .error-msg{color:var(--danger);text-align:center;margin-top:10px;font-size:.85rem;display:none}
+  .dashboard{display:none}
+  .dashboard.active{display:block}
+  .topbar{background:rgba(7,8,12,.9);border-bottom:1px solid var(--line);padding:15px}
+  .topbar-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .topbar-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.1rem}
+  .topbar-logo span{background:var(--grad);-webkit-background-clip:text;color:transparent}
+  .user-badge{padding:5px 12px;border-radius:100px;font-size:.75rem;font-weight:700}
+  .badge-admin{background:rgba(255,61,0,.15);color:var(--fire-2);border:1px solid rgba(255,145,0,.3)}
+  .badge-premium{background:rgba(168,85,247,.15);color:var(--premium);border:1px solid rgba(168,85,247,.3)}
+  .badge-free{background:rgba(158,158,158,.15);color:var(--muted);border:1px solid var(--line)}
+  .topbar-user{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .logout-btn{padding:6px 12px;border-radius:6px;background:rgba(239,83,80,.15);border:1px solid rgba(239,83,80,.3);color:var(--danger);cursor:pointer;font-size:.8rem}
+  .dashboard-container{padding:20px}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:30px}
+  .stat-card{background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .stat-card .value{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8rem;background:var(--grad);-webkit-background-clip:text;color:transparent;margin-bottom:4px}
+  .stat-card .label{color:var(--muted);font-size:.8rem;text-transform:uppercase}
+  .tabs{display:flex;gap:5px;margin-bottom:20px;border-bottom:1px solid var(--line);overflow-x:auto}
+  .tab{padding:10px 15px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;text-transform:uppercase;font-size:.85rem;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+  .tab.active{color:var(--fire-2);border-bottom-color:var(--fire-2)}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+  .tournament-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
+  .tournament-card{background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:18px;position:relative}
+  .tournament-status{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+  .status-active{background:rgba(76,175,80,.15);color:var(--success);border:1px solid rgba(76,175,80,.3)}
+  .status-upcoming{background:rgba(255,167,38,.15);color:#ffa726;border:1px solid rgba(255,167,38,.3)}
+  .tournament-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:5px}
+  .tournament-date{color:var(--muted);font-size:.8rem;margin-bottom:12px}
+  .tournament-info{display:flex;flex-direction:column;gap:5px;margin-bottom:15px}
+  .tournament-info div{display:flex;justify-content:space-between;font-size:.85rem}
+  .tournament-info strong{color:var(--fire-2)}
+  .premium-notice{padding:15px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:10px;margin-bottom:20px}
+  .premium-notice h3{color:var(--premium);margin-bottom:5px;font-size:1rem}
+  .premium-notice p{color:var(--muted);font-size:.85rem}
+  
+  /* User Table Styles */
+  .table-wrap{background:var(--glass);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+  .table-header{padding:15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .table-header h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem}
+  .search-box{padding:8px 12px;border-radius:6px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--text);font-size:.85rem}
+  table{width:100%;border-collapse:collapse;min-width:500px}
+  thead{background:rgba(0,0,0,.3)}
+  th{padding:12px;text-align:left;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;font-size:.75rem;color:var(--muted)}
+  td{padding:12px;border-top:1px solid var(--line);font-size:.85rem}
+  .badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+  .action-btn{padding:5px 10px;border-radius:5px;border:none;cursor:pointer;font-size:.7rem;font-weight:600;margin-right:5px}
+  .btn-upgrade{background:rgba(168,85,247,.15);color:var(--premium);border:1px solid rgba(168,85,247,.3)}
+  .btn-downgrade{background:rgba(158,158,158,.15);color:var(--muted);border:1px solid var(--line)}
+  .btn-delete{background:rgba(239,83,80,.15);color:var(--danger);border:1px solid rgba(239,83,80,.3)}
+</style>
+</head>
+<body>
+
+<!-- UNIFIED LOGIN SCREEN -->
+<div class="auth-screen" id="loginScreen">
+  <div class="auth-box">
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <h1>LOGIN <span>TO CONTINUE</span></h1>
+    <p>Access your tournament dashboard</p>
+    <form id="loginForm">
+      <div class="form-group"><label>Email / Username</label><input type="text" id="loginEmail" placeholder="Enter your email" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter your password" required></div>
+      <button type="submit" class="btn">🔥 Login</button>
+      <div class="error-msg" id="errorMsg">Invalid credentials!</div>
+    </form>
+    <div class="auth-switch">Don't have an account? <a onclick="showRegister()">Register as Free User</a></div>
+  </div>
+</div>
+
+<!-- REGISTER SCREEN -->
+<div class="auth-screen" id="registerScreen" style="display:none">
+  <div class="auth-box">
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <h1>CREATE <span>ACCOUNT</span></h1>
+    <p>Register as a free user to join tournaments</p>
+    <form id="registerForm">
+      <div class="form-group"><label>Email</label><input type="email" id="registerEmail" placeholder="you@example.com" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="registerPassword" placeholder="Min 6 characters" minlength="6" required></div>
+      <div class="form-group"><label>Display Name</label><input type="text" id="displayName" placeholder="Your name" required></div>
+      <button type="submit" class="btn">✨ Create Free Account</button>
+    </form>
+    <div class="auth-switch">Already have an account? <a onclick="showLogin()">Login here</a></div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD (Sirf Admin ko dikhega) -->
+<div class="dashboard" id="adminDashboard">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-logo">🔥 TOURNAMENT<span>ADMIN</span></div>
+      <div class="topbar-user">
+        <span class="user-badge badge-admin">Admin</span>
+        <span id="adminEmail"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-container">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="value">12</div><div class="label">All Tournaments</div></div>
+      <div class="stat-card"><div class="value">5</div><div class="label">Premium Users</div></div>
+      <div class="stat-card"><div class="value">150</div><div class="label">Total Users</div></div>
+      <div class="stat-card"><div class="value">3</div><div class="label">Active</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchAdminTab('tournaments', this)">Tournaments</div>
+      <div class="tab" onclick="switchAdminTab('users', this)">Manage Users</div>
+    </div>
+    
+    <!-- Tournaments Tab -->
+    <div class="tab-content active" id="adminTabTournaments">
+      <div class="tournament-grid" id="adminTournamentGrid"></div>
+    </div>
+
+    <!-- Manage Users Tab (Yahan admin.html ka kaam aa gaya) -->
+    <div class="tab-content" id="adminTabUsers">
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Manage Users (Upgrade / Downgrade)</h3>
+          <input type="text" class="search-box" id="searchBox" placeholder="Search users...">
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PREMIUM DASHBOARD -->
+<div class="dashboard" id="premiumDashboard">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-logo">💎 PREMIUM<span>DASHBOARD</span></div>
+      <div class="topbar-user">
+        <span class="user-badge badge-premium">Premium</span>
+        <span id="premiumEmail"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-container">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="value">2</div><div class="label">My Tournaments</div></div>
+      <div class="stat-card"><div class="value">10</div><div class="label">Total Matches</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">My Tournaments</div>
+      <div class="tab">Create New</div>
+    </div>
+    <div class="tab-content active">
+      <div class="tournament-grid" id="premiumTournamentGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FREE DASHBOARD -->
+<div class="dashboard" id="freeDashboard">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-logo">🎮 TOURNAMENT<span>HUB</span></div>
+      <div class="topbar-user">
+        <span class="user-badge badge-free">Free User</span>
+        <span id="freeEmail"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-container">
+    <div class="premium-notice">
+      <h3>💎 Want to create tournaments?</h3>
+      <p>Contact admin to upgrade to Premium account!</p>
+    </div>
+    <div class="tabs">
+      <div class="tab active">Browse Tournaments</div>
+    </div>
+    <div class="tab-content active">
+      <div class="tournament-grid" id="freeTournamentGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //  ADMIN CREDENTIALS
+  const ADMIN_CREDS = { email: "admin@infernocup.com", password: "admin123" };
+
+  // Demo Data
+  const demoTournaments = [
+    {name:'Inferno Cup Season 1',startDate:'2026-10-25',endDate:'2026-11-01',maxTeams:128,prizePool:'$10,000',status:'active',registeredTeams:45},
+    {name:'Pro League 2026',startDate:'2026-11-15',endDate:'2026-11-20',maxTeams:64,prizePool:'$5,000',status:'upcoming',registeredTeams:12}
+  ];
+
+  let demoUsers = [
+    {id:1, email:'player1@test.com', name:'Rahul Gamer', role:'free'},
+    {id:2, email:'pro@test.com', name:'Aman Pro', role:'premium'},
+    {id:3, email:'newbie@test.com', name:'Rohan', role:'free'}
+  ];
+
+  function showLogin(){
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('registerScreen').style.display='none';
+    document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+  
+  function showRegister(){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('registerScreen').style.display='flex';
+  }
+
+  function renderTournaments(gridId, list) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = list.map(t => `
+      <div class="tournament-card">
+        <div class="tournament-status status-${t.status}">${t.status}</div>
+        <div class="tournament-title">${t.name}</div>
+        <div class="tournament-date">📅 ${t.startDate} to ${t.endDate}</div>
+        <div class="tournament-info">
+          <div><span>Max Teams:</span><strong>${t.maxTeams}</strong></div>
+          <div><span>Prize Pool:</span><strong>${t.prizePool}</strong></div>
+          <div><span>Registered:</span><strong>${t.registeredTeams}/${t.maxTeams}</strong></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderUsers(filter = '') {
+    const tbody = document.getElementById('usersTable');
+    const filtered = demoUsers.filter(u => u.email.toLowerCase().includes(filter.toLowerCase()) || u.name.toLowerCase().includes(filter.toLowerCase()));
+    
+    if(filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted)">No users found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(u => {
+      let actions = '';
+      if(u.role === 'admin') actions = '<span style="color:var(--muted)">Protected</span>';
+      else if(u.role === 'free') actions = `<button class="action-btn btn-upgrade" onclick="upgradeUser(${u.id})">💎 Upgrade</button>`;
+      else if(u.role === 'premium') actions = `<button class="action-btn btn-downgrade" onclick="downgradeUser(${u.id})"> Downgrade</button>`;
+      
+      if(u.role !== 'admin') actions += `<button class="action-btn btn-delete" onclick="deleteUser(${u.id})">Delete</button>`;
+
+      return `<tr>
+        <td>${u.email}</td>
+        <td>${u.name}</td>
+        <td><span class="badge badge-${u.role}">${u.role}</span></td>
+        <td>${actions}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Initialize Grids
+  renderTournaments('adminTournamentGrid', demoTournaments);
+  renderTournaments('premiumTournamentGrid', demoTournaments);
+  renderTournaments('freeTournamentGrid', demoTournaments);
+  renderUsers();
+
+  // Tab Switching for Admin
+  window.switchAdminTab = function(tabName, element) {
+    document.querySelectorAll('#adminDashboard .tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#adminDashboard .tab-content').forEach(c => c.classList.remove('active'));
+    element.classList.add('active');
+    document.getElementById('adminTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+  }
+
+  // Search User
+  document.getElementById('searchBox').addEventListener('input', e => renderUsers(e.target.value));
+
+  // User Actions
+  window.upgradeUser = function(id) {
+    const user = demoUsers.find(u => u.id === id);
+    if(user) { user.role = 'premium'; renderUsers(); alert(`✅ ${user.name} upgraded to Premium!`); }
+  };
+  window.downgradeUser = function(id) {
+    const user = demoUsers.find(u => u.id === id);
+    if(user) { user.role = 'free'; renderUsers(); alert(`✅ ${user.name} downgraded to Free!`); }
+  };
+  window.deleteUser = function(id) {
+    if(confirm('Delete this user?')) {
+      demoUsers = demoUsers.filter(u => u.id !== id);
+      renderUsers();
+    }
+  };
+
+  //  UNIFIED LOGIN LOGIC
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    const errorMsg = document.getElementById('errorMsg');
+
+    if (email === ADMIN_CREDS.email && pass === ADMIN_CREDS.password) {
+      errorMsg.style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminEmail').textContent = email;
+      document.getElementById('adminDashboard').classList.add('active');
+    } 
+    else if (email && pass.length >= 6) {
+      errorMsg.style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('freeEmail').textContent = email;
+      document.getElementById('freeDashboard').classList.add('active');
+    } 
+    else {
+      errorMsg.style.display = 'block';
+    }
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', e => {
+    e.preventDefault();
+    alert('✅ Account created! Please login now.');
+    showLogin();
+  });
+
+  window.logout = function(){
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+    showLogin();
+  };
+</script>
+</body>
+</html>
