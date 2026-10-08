@@ -30,7 +30,7 @@
   .topbar-logo span{background:var(--grad);-webkit-background-clip:text;color:transparent}
   .user-badge{padding:5px 12px;border-radius:100px;font-size:.75rem;font-weight:700}
   .badge-admin{background:rgba(255,61,0,.15);color:var(--fire-2);border:1px solid rgba(255,145,0,.3)}
-  .badge-premium{background:rgba(168,85,247,.15);color:var(--premium);border:1px solid rgba(168,85,247,.3)}
+  .badge-premium{background:rgba(168,85,247,.15);color:var(--premium);border:1px solid rgba3)}
   .badge-free{background:rgba(158,158,158,.15);color:var(--muted);border:1px solid var(--line)}
   .topbar-user{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .logout-btn{padding:6px 12px;border-radius:6px;background:rgba(239,83,80,.15);border:1px solid rgba(239,83,80,.3);color:var(--danger);cursor:pointer;font-size:.8rem}
@@ -57,8 +57,6 @@
   .premium-notice{padding:15px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:10px;margin-bottom:20px}
   .premium-notice h3{color:var(--premium);margin-bottom:5px;font-size:1rem}
   .premium-notice p{color:var(--muted);font-size:.85rem}
-  
-  /* User Table Styles */
   .table-wrap{background:var(--glass);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
   .table-header{padding:15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
   .table-header h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem}
@@ -108,7 +106,7 @@
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD (Sirf Admin ko dikhega) -->
+<!-- ADMIN DASHBOARD -->
 <div class="dashboard" id="adminDashboard">
   <div class="topbar">
     <div class="topbar-inner">
@@ -122,37 +120,26 @@
   </div>
   <div class="dashboard-container">
     <div class="stats-grid">
-      <div class="stat-card"><div class="value">12</div><div class="label">All Tournaments</div></div>
-      <div class="stat-card"><div class="value">5</div><div class="label">Premium Users</div></div>
-      <div class="stat-card"><div class="value">150</div><div class="label">Total Users</div></div>
-      <div class="stat-card"><div class="value">3</div><div class="label">Active</div></div>
+      <div class="stat-card"><div class="value" id="statTournaments">0</div><div class="label">All Tournaments</div></div>
+      <div class="stat-card"><div class="value" id="statPremium">0</div><div class="label">Premium Users</div></div>
+      <div class="stat-card"><div class="value" id="statTotalUsers">0</div><div class="label">Total Users</div></div>
+      <div class="stat-card"><div class="value" id="statActive">0</div><div class="label">Active</div></div>
     </div>
     <div class="tabs">
-      <div class="tab active" onclick="switchAdminTab('tournaments', this)">Tournaments</div>
-      <div class="tab" onclick="switchAdminTab('users', this)">Manage Users</div>
+      <div class="tab active" onclick="switchAdminTab('Tournaments', this)">Tournaments</div>
+      <div class="tab" onclick="switchAdminTab('Users', this)">Manage Users</div>
     </div>
-    
-    <!-- Tournaments Tab -->
     <div class="tab-content active" id="adminTabTournaments">
       <div class="tournament-grid" id="adminTournamentGrid"></div>
     </div>
-
-    <!-- Manage Users Tab (Yahan admin.html ka kaam aa gaya) -->
     <div class="tab-content" id="adminTabUsers">
       <div class="table-wrap">
         <div class="table-header">
-          <h3>Manage Users (Upgrade / Downgrade)</h3>
+          <h3>Manage Users</h3>
           <input type="text" class="search-box" id="searchBox" placeholder="Search users...">
         </div>
         <table>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead>
           <tbody id="usersTable"></tbody>
         </table>
       </div>
@@ -173,17 +160,12 @@
     </div>
   </div>
   <div class="dashboard-container">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="value">2</div><div class="label">My Tournaments</div></div>
-      <div class="stat-card"><div class="value">10</div><div class="label">Total Matches</div></div>
+    <div class="premium-notice">
+      <h3>💎 Create Your Own Tournament!</h3>
+      <p>As a premium user, you can host your own Free Fire tournaments.</p>
     </div>
-    <div class="tabs">
-      <div class="tab active">My Tournaments</div>
-      <div class="tab">Create New</div>
-    </div>
-    <div class="tab-content active">
-      <div class="tournament-grid" id="premiumTournamentGrid"></div>
-    </div>
+    <div class="tabs"><div class="tab active">My Tournaments</div></div>
+    <div class="tab-content active"><div class="tournament-grid" id="premiumTournamentGrid"></div></div>
   </div>
 </div>
 
@@ -191,7 +173,7 @@
 <div class="dashboard" id="freeDashboard">
   <div class="topbar">
     <div class="topbar-inner">
-      <div class="topbar-logo">🎮 TOURNAMENT<span>HUB</span></div>
+      <div class="topbar-logo"> TOURNAMENT<span>HUB</span></div>
       <div class="topbar-user">
         <span class="user-badge badge-free">Free User</span>
         <span id="freeEmail"></span>
@@ -204,45 +186,158 @@
       <h3>💎 Want to create tournaments?</h3>
       <p>Contact admin to upgrade to Premium account!</p>
     </div>
-    <div class="tabs">
-      <div class="tab active">Browse Tournaments</div>
-    </div>
-    <div class="tab-content active">
-      <div class="tournament-grid" id="freeTournamentGrid"></div>
-    </div>
+    <div class="tabs"><div class="tab active">Browse Tournaments</div></div>
+    <div class="tab-content active"><div class="tournament-grid" id="freeTournamentGrid"></div></div>
   </div>
 </div>
 
-<script>
-  //  ADMIN CREDENTIALS
-  const ADMIN_CREDS = { email: "admin@infernocup.com", password: "admin123" };
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // Demo Data
-  const demoTournaments = [
-    {name:'Inferno Cup Season 1',startDate:'2026-10-25',endDate:'2026-11-01',maxTeams:128,prizePool:'$10,000',status:'active',registeredTeams:45},
-    {name:'Pro League 2026',startDate:'2026-11-15',endDate:'2026-11-20',maxTeams:64,prizePool:'$5,000',status:'upcoming',registeredTeams:12}
-  ];
+  // 🔥 YAHAN APNI FIREBASE CONFIG PASTE KARO 🔥
+  const firebaseConfig = {
+    apiKey: "AIzaSyBg4lMhVvMeDpbMG-fxcMpmKsf45Sv3xz",
+    authDomain: "nfernocup-eadae.firebaseapp.com",
+    projectId: "infernocup-eadae",
+    storageBucket: "infernocup-eadae.firebasestorage.app",
+    messagingSenderId: "715367085784",
+    appId: "1:715367085784:web:4748be002c57588337c9ad"
+  };
 
-  let demoUsers = [
-    {id:1, email:'player1@test.com', name:'Rahul Gamer', role:'free'},
-    {id:2, email:'pro@test.com', name:'Aman Pro', role:'premium'},
-    {id:3, email:'newbie@test.com', name:'Rohan', role:'free'}
-  ];
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  function showLogin(){
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('registerScreen').style.display='none';
+  let currentUserData = null;
+
+  // Auth State Listener
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        currentUserData = docSnap.data();
+        routeUser(user.email);
+      } else {
+        // Agar user auth me hai par firestore me nahi (naya register kiya hai)
+        // Hum usko free user bana denge
+        await setDoc(docRef, {
+          email: user.email,
+          displayName: user.email.split('@')[0],
+          role: 'free',
+          createdAt: new Date()
+        });
+        currentUserData = { email: user.email, displayName: user.email.split('@')[0], role: 'free' };
+        routeUser(user.email);
+      }
+    } else {
+      showLogin();
+    }
+  });
+
+  function routeUser(email) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('registerScreen').style.display = 'none';
     document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
-    document.getElementById('errorMsg').style.display = 'none';
+
+    if (currentUserData.role === 'admin') {
+      document.getElementById('adminEmail').textContent = email;
+      document.getElementById('adminDashboard').classList.add('active');
+      loadAdminData();
+    } else if (currentUserData.role === 'premium') {
+      document.getElementById('premiumEmail').textContent = email;
+      document.getElementById('premiumDashboard').classList.add('active');
+    } else {
+      document.getElementById('freeEmail').textContent = email;
+      document.getElementById('freeDashboard').classList.add('active');
+    }
   }
-  
-  function showRegister(){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('registerScreen').style.display='flex';
+
+  // Login Function
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    const errorMsg = document.getElementById('errorMsg');
+
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      errorMsg.style.display = 'none';
+    } catch (error) {
+      errorMsg.style.display = 'block';
+      errorMsg.textContent = "Login Failed: " + error.message;
+    }
+  });
+
+  // Register Function
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value.trim();
+    const pass = document.getElementById('registerPassword').value;
+    const name = document.getElementById('displayName').value.trim();
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        displayName: name,
+        role: 'free',
+        createdAt: new Date()
+      });
+      alert('Account created successfully!');
+    } catch (error) {
+      alert('Registration Failed: ' + error.message);
+    }
+  });
+
+  // Logout Function
+  window.logout = async function() {
+    await signOut(auth);
+    currentUserData = null;
+  };
+
+  // Admin Data Loading
+  function loadAdminData() {
+    // Load Users
+    onSnapshot(collection(db, "users"), (snapshot) => {
+      const users = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      document.getElementById('statTotalUsers').textContent = users.length;
+      document.getElementById('statPremium').textContent = users.filter(u => u.role === 'premium').length;
+      renderUsers(users);
+    });
+
+    // Load Tournaments
+    onSnapshot(collection(db, "tournaments"), (snapshot) => {
+      const tournaments = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      document.getElementById('statTournaments').textContent = tournaments.length;
+      document.getElementById('statActive').textContent = tournaments.filter(t => t.status === 'active').length;
+      renderTournaments('adminTournamentGrid', tournaments);
+      renderTournaments('premiumTournamentGrid', tournaments);
+      renderTournaments('freeTournamentGrid', tournaments);
+    });
+  }
+
+  function renderUsers(users) {
+    const tbody = document.getElementById('usersTable');
+    tbody.innerHTML = users.map(u => {
+      if(u.role === 'admin') return `<tr><td>${u.email}</td><td>${u.displayName}</td><td><span class="badge badge-admin">admin</span></td><td>Protected</td></tr>`;
+      
+      let actions = '';
+      if(u.role === 'free') actions = `<button class="action-btn btn-upgrade" onclick="window.upgradeUser('${u.id}', '${u.displayName}')">💎 Upgrade</button>`;
+      if(u.role === 'premium') actions = `<button class="action-btn btn-downgrade" onclick="window.downgradeUser('${u.id}', '${u.displayName}')"> Downgrade</button>`;
+      actions += ` <button class="action-btn btn-delete" onclick="window.deleteUser('${u.id}')">Delete</button>`;
+
+      return `<tr><td>${u.email}</td><td>${u.displayName}</td><td><span class="badge badge-${u.role}">${u.role}</span></td><td>${actions}</td></tr>`;
+    }).join('');
   }
 
   function renderTournaments(gridId, list) {
     const grid = document.getElementById(gridId);
+    if(list.length === 0) { grid.innerHTML = '<p style="color:var(--muted);padding:20px">No tournaments yet.</p>'; return; }
     grid.innerHTML = list.map(t => `
       <div class="tournament-card">
         <div class="tournament-status status-${t.status}">${t.status}</div>
@@ -251,106 +346,46 @@
         <div class="tournament-info">
           <div><span>Max Teams:</span><strong>${t.maxTeams}</strong></div>
           <div><span>Prize Pool:</span><strong>${t.prizePool}</strong></div>
-          <div><span>Registered:</span><strong>${t.registeredTeams}/${t.maxTeams}</strong></div>
         </div>
       </div>
     `).join('');
   }
 
-  function renderUsers(filter = '') {
-    const tbody = document.getElementById('usersTable');
-    const filtered = demoUsers.filter(u => u.email.toLowerCase().includes(filter.toLowerCase()) || u.name.toLowerCase().includes(filter.toLowerCase()));
-    
-    if(filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--muted)">No users found</td></tr>';
-      return;
+  // Admin Actions (Global scope)
+  window.upgradeUser = async (id, name) => {
+    if(confirm(`Upgrade ${name} to Premium?`)) {
+      await updateDoc(doc(db, "users", id), { role: 'premium' });
     }
+  };
+  window.downgradeUser = async (id, name) => {
+    if(confirm(`Downgrade ${name} to Free?`)) {
+      await updateDoc(doc(db, "users", id), { role: 'free' });
+    }
+  };
+  window.deleteUser = async (id) => {
+    if(confirm('Delete this user?')) {
+      await deleteDoc(doc(db, "users", id));
+    }
+  };
 
-    tbody.innerHTML = filtered.map(u => {
-      let actions = '';
-      if(u.role === 'admin') actions = '<span style="color:var(--muted)">Protected</span>';
-      else if(u.role === 'free') actions = `<button class="action-btn btn-upgrade" onclick="upgradeUser(${u.id})">💎 Upgrade</button>`;
-      else if(u.role === 'premium') actions = `<button class="action-btn btn-downgrade" onclick="downgradeUser(${u.id})"> Downgrade</button>`;
-      
-      if(u.role !== 'admin') actions += `<button class="action-btn btn-delete" onclick="deleteUser(${u.id})">Delete</button>`;
-
-      return `<tr>
-        <td>${u.email}</td>
-        <td>${u.name}</td>
-        <td><span class="badge badge-${u.role}">${u.role}</span></td>
-        <td>${actions}</td>
-      </tr>`;
-    }).join('');
-  }
-
-  // Initialize Grids
-  renderTournaments('adminTournamentGrid', demoTournaments);
-  renderTournaments('premiumTournamentGrid', demoTournaments);
-  renderTournaments('freeTournamentGrid', demoTournaments);
-  renderUsers();
-
-  // Tab Switching for Admin
+  // Tab Switching
   window.switchAdminTab = function(tabName, element) {
     document.querySelectorAll('#adminDashboard .tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('#adminDashboard .tab-content').forEach(c => c.classList.remove('active'));
     element.classList.add('active');
-    document.getElementById('adminTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+    document.getElementById('adminTab' + tabName).classList.add('active');
   }
 
-  // Search User
-  document.getElementById('searchBox').addEventListener('input', e => renderUsers(e.target.value));
-
-  // User Actions
-  window.upgradeUser = function(id) {
-    const user = demoUsers.find(u => u.id === id);
-    if(user) { user.role = 'premium'; renderUsers(); alert(`✅ ${user.name} upgraded to Premium!`); }
-  };
-  window.downgradeUser = function(id) {
-    const user = demoUsers.find(u => u.id === id);
-    if(user) { user.role = 'free'; renderUsers(); alert(`✅ ${user.name} downgraded to Free!`); }
-  };
-  window.deleteUser = function(id) {
-    if(confirm('Delete this user?')) {
-      demoUsers = demoUsers.filter(u => u.id !== id);
-      renderUsers();
-    }
-  };
-
-  //  UNIFIED LOGIN LOGIC
-  document.getElementById('loginForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value;
-    const errorMsg = document.getElementById('errorMsg');
-
-    if (email === ADMIN_CREDS.email && pass === ADMIN_CREDS.password) {
-      errorMsg.style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminEmail').textContent = email;
-      document.getElementById('adminDashboard').classList.add('active');
-    } 
-    else if (email && pass.length >= 6) {
-      errorMsg.style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('freeEmail').textContent = email;
-      document.getElementById('freeDashboard').classList.add('active');
-    } 
-    else {
-      errorMsg.style.display = 'block';
-    }
-  });
-
-  document.getElementById('registerForm').addEventListener('submit', e => {
-    e.preventDefault();
-    alert('✅ Account created! Please login now.');
-    showLogin();
-  });
-
-  window.logout = function(){
-    document.getElementById('loginEmail').value = '';
-    document.getElementById('loginPassword').value = '';
-    showLogin();
-  };
+  // UI Helpers
+  function showLogin(){
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('registerScreen').style.display='none';
+    document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+  }
+  function showRegister(){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('registerScreen').style.display='flex';
+  }
 </script>
 </body>
 </html>
